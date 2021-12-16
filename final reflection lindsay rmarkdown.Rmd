@@ -1,0 +1,195 @@
+---
+title: "lindsay"
+author: "me"
+date: "12/12/2021"
+output: html_document
+---
+
+```{r message=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(ggridges)
+library(readr)
+library(forcats)
+library(ggrepel)
+library(dplyr)
+library(tidyr)
+
+
+```
+
+```{r plotting height vs weight}
+data=starwars
+ggplot(data= starwars, mapping= aes(x=height , y= mass)) + geom_point(colour= "blue")
+
+```
+```{r getting rid of jabba the hut}
+starwarss <- filter(starwars, name != "Jabba Desilijic Tiure")
+```
+
+```{r new data set with trend line}
+ggplot(starwarss, aes(height,mass)) +geom_point(colour="black") +geom_smooth(method=lm, se= FALSE)
+```
+
+```{r species based on new data set}
+ggplot(starwarss, aes(height, mass, colour=species)) + geom_point()
+```
+
+
+
+```{r creating a new sub data set }
+lib<- starwars %>% subset(species == "Human" | species == "Droid" | species == "Ewok") 
+```
+
+```{r plotting the human ewok or droid}
+ggplot (lib, aes(species,mass)) + geom_boxplot()
+```
+```{r facet wrap grid with eye color}
+ggplot(data=starwars, mapping= aes(x=height, y=mass)) + geom_point() + facet_wrap(~eye_color)
+```
+```{r bar plot segemented}
+ggplot(data = starwars, mapping = aes(x=gender, fill = hair_color)) + geom_bar()
+```
+```{r}
+ggplot(data=starwarss) + geom_point(mapping = aes(x=mass, y= height, colour= gender), alpha= 0.7, shape= 17 , size =4) + coord_cartesian(xlim=c(0,180))
+```
+```{r}
+starwars %>% filter (height <100)
+```
+
+```{r}
+starwars %>% filter(eye_color == "red") %>% select(name)
+```
+
+```{r sum of height and mass}
+starwars %>%
+  mutate(height_plus_mass = height + mass) %>%
+  select(name, height, mass, height_plus_mass)
+```
+```{r}
+starwars %>%
+  filter(homeworld %in% c("Naboo", "Tatooine")) %>%
+  ggplot(aes(species)) +
+  geom_bar() +
+  facet_grid(. ~ homeworld)
+```
+ 
+```{r}
+data=USArrests
+```
+
+
+```{r}
+data(singer, package='lattice')
+```
+
+```{r}
+ lm <- ggplot(singer, aes(x=voice.part, y=height))
+
+lm
+```
+```{r}
+lm <- lm + geom_boxplot(fill="lightgreen")
+lm
+```
+```{r}
+lm <- lm + geom_violin(fill="blue")
+lm
+```
+```{r}
+data("USArrests")
+crimes <- data.frame(state=tolower(rownames(USArrests)), USArrests)
+```
+
+```{r}
+gg <- ggplot(crimes, aes(map_id=state, fill=Murder))
+gg
+```
+
+```{r}
+gg <- gg + geom_map(map=map_data("state"))
+gg
+```
+```{r}
+gg <- gg + expand_limits(x=map_data("state")$long, y=map_data("state")$lat)
+gg
+```
+```{r}
+
+USArrests2 <- USArrests %>%
+  gather(Crime, Number, Assault, Rape, Murder)
+
+ggplot(USArrests2, aes(x = Crime, y = Number)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(breaks = c(100, 200, 300)) +
+  facet_wrap(~ state_name, nrow = 5) 
+
+```
+
+```{r}
+diamond.plot <- ggplot(data=diamonds, aes(x=carat, y=price, colour = color))
+diamond.plot + geom_point()
+```
+```{r}
+birthwt <- as_tibble(MASS::birthwt)
+
+birthwt <- birthwt %>%
+  rename(birthwt.below.2500 = low, 
+         mother.age = age,
+         mother.weight = lwt,
+         mother.smokes = smoke,
+         previous.prem.labor = ptl,
+         hypertension = ht,
+         uterine.irr = ui,
+         physician.visits = ftv,
+         birthwt.grams = bwt)
+
+# Assign better labels to categorical variables
+birthwt <- birthwt %>%
+  mutate(race = recode_factor(race, `1` = "white", `2` = "black", `3` = "other")) %>%
+  mutate_at(c("mother.smokes", "hypertension", "uterine.irr", "birthwt.below.2500"),
+            ~ recode_factor(.x, `0` = "no", `1` = "yes"))
+```
+
+```{r}
+bwt.summary <- birthwt %>%
+  group_by(race, mother.smokes) %>%
+  summarize(mean.birthwt = round(mean(birthwt.grams), 0))
+
+bwt.summary
+```
+```{r}
+p.bwt <- ggplot(data = bwt.summary, 
+                aes(y = mean.birthwt, x = race, fill = mother.smokes))
+
+# Pick colors for the bars
+bwt.colors <- c("#009E73", "#999999")
+
+# Display barchart
+p.bwt + geom_bar(stat = "identity", position = "dodge") +
+  ylab("Average birthweight") + 
+  xlab("Mother's race") +
+  guides(fill = guide_legend(title = "Mother's smoking status")) + 
+  scale_fill_manual(values=bwt.colors)
+
+```
+```{r}
+base.plot <- ggplot(birthwt, aes(x = mother.age)) +
+  xlab("Mother's age") 
+base.plot + geom_histogram()
+```
+```{r}
+base.plot + geom_histogram(aes(fill = race))
+
+```
+```{r}
+base.plot + geom_density(aes(fill = race), alpha = 0.5)
+
+```
+```{r}
+ggplot(birthwt, aes(x=mother.age, y=birthwt.grams, shape=mother.smokes, color=mother.smokes)) + 
+  geom_point() + # Adds points (scatterplot)
+  geom_smooth(method = "lm") + # Adds regression lines
+  ylab("Birth Weight (grams)") + # Changes y-axis label
+  xlab("Mother's Age (years)") + # Changes x-axis label
+  ggtitle("Birth Weight in relation to Mother's Age")
