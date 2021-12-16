@@ -114,17 +114,6 @@ gg
 gg <- gg + expand_limits(x=map_data("state")$long, y=map_data("state")$lat)
 gg
 ```
-```{r}
-
-USArrests2 <- USArrests %>%
-  gather(Crime, Number, Assault, Rape, Murder)
-
-ggplot(USArrests2, aes(x = Crime, y = Number)) +
-  geom_bar(stat = "identity") +
-  scale_y_continuous(breaks = c(100, 200, 300)) +
-  facet_wrap(~ state_name, nrow = 5) 
-
-```
 
 ```{r}
 diamond.plot <- ggplot(data=diamonds, aes(x=carat, y=price, colour = color))
@@ -193,3 +182,4 @@ ggplot(birthwt, aes(x=mother.age, y=birthwt.grams, shape=mother.smokes, color=mo
   ylab("Birth Weight (grams)") + # Changes y-axis label
   xlab("Mother's Age (years)") + # Changes x-axis label
   ggtitle("Birth Weight in relation to Mother's Age")
+```
