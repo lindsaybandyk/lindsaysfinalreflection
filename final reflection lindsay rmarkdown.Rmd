@@ -63,19 +63,19 @@ data=starwars
 ggplot(data= starwars, mapping= aes(x=height , y= mass)) + geom_point(colour= "blue")
 
 ```
+
+**I can apply a function to groupings within a data source.**
+
 ```{r getting rid of jabba the hut}
 starwarss <- filter(starwars, name != "Jabba Desilijic Tiure")
 ```
 
-**I can apply a function to groupings within a data source.**
-
-
-
-**I can fit a regression model for descriptive analysis.** I wanted to see the trend between massa and height without jabba
+**I can fit a regression model for descriptive analysis.** I wanted to see the trend between mass and height without jabba
 
 ```{r new data set with trend line}
 ggplot(starwarss, aes(height,mass)) +geom_point(colour="black") +geom_smooth(method=lm, se= FALSE)
 ```
+
 **I can implement resampling methods to make conclusions about data.**
 
 ```{r species based on new data set}
@@ -95,9 +95,13 @@ ggplot (lib, aes(species,mass)) + geom_boxplot()
 ```
 
 **I can apply a function to groupings within a data source.**
+
 ```{r facet wrap grid with eye color}
 ggplot(data=starwars, mapping= aes(x=height, y=mass)) + geom_point() + facet_wrap(~eye_color)
 ```
+
+**I can fit a regression model for descriptive analysis.**
+
 ```{r bar plot segemented}
 ggplot(data = starwars, mapping = aes(x=gender, fill = hair_color)) + geom_bar()
 ```
@@ -107,22 +111,32 @@ ggplot(data = starwars, mapping = aes(x=gender, fill = hair_color)) + geom_bar()
 ```{r plotting starwars gender does it affect mass height }
 ggplot(data=starwarss) + geom_point(mapping = aes(x=mass, y= height, colour= gender), alpha= 0.7, shape= 17 , size =4) + coord_cartesian(xlim=c(0,180))
 ```
-**next I will be filtering information from a larger data source, where we are looking at heights under 100 inches. I can isolate information from a larger data source.**
+
+**Next I will be filtering information from a larger data source, where we are looking at heights under 100 inches. I can isolate information from a larger data source.**
 
 ```{r I can isolate information from a larger data source}
 starwars %>% filter (height <100)
 ```
+
 **I can use a project-based workflow to organize and run reproducible analyses.**
+
 ```{r filtering red eyes}
 starwars %>% filter(eye_color == "red") %>% select(name)
+
 ```
+
 **Once again, I can use a project-based workflow to organize and run reproducible analyses.**
+
 ```{r sum of height and mass}
 starwars %>%
   mutate(height_plus_mass = height + mass) %>%
   select(name, height, mass, height_plus_mass)
 ```
-```{r facet grid for homeworkd}
+
+
+**I can apply a function to groupings within a data source.**
+
+```{r facet grid for homeworld}
 starwars %>%
   filter(homeworld %in% c("Naboo", "Tatooine")) %>%
   ggplot(aes(species)) +
@@ -130,19 +144,24 @@ starwars %>%
   facet_grid(. ~ homeworld)
 ```
 **Using this data set so I can show a cool map I can produce with it** 
+
 ```{r data arrests}
 data=USArrests
 ```
 
 **defining the new dataset**
+
 ```{r making states}
 data("USArrests")
 crimes <- data.frame(state=tolower(rownames(USArrests)), USArrests)
 ```
+
 **on the way to creating cool map**
+
 ```{r creating map}
 stateee <- ggplot(crimes, aes(map_id=state, fill=Murder))
 stateee
+
 ```
 **add legend**
 **I can restructure information to be in a “tidy” format.**
@@ -163,6 +182,7 @@ stateee
 **I used this dataset because I found the data itself intruiguing and I could do many comparisons over the same period of time or x axis with the histograms shown below**
 
 *Assigning  better labels to categorical variables*
+
 ```{r}
 birthwt <- as_tibble(MASS::birthwt)
 birthwt <- birthwt %>%
@@ -191,7 +211,10 @@ bwt.summary <- birthwt %>%
   summarize(mean.birthwt = round(mean(birthwt.grams), 0))
 
 bwt.summary
+
 ```
+
+
 ```{r relationship to mothers age,smoking/nonsmoking/birthweight}
 p.bwt <- ggplot(data = bwt.summary, 
                 aes(y = mean.birthwt, x = race, fill = mother.smokes))
@@ -207,18 +230,24 @@ p.bwt + geom_bar(stat = "identity", position = "dodge") +
   scale_fill_manual(values=bwt.colors)
 
 ```
+
+**I can fit a regression model for descriptive analysis.**
+
 ```{r}
 base.plot <- ggplot(birthwt, aes(x = mother.age)) +
   xlab("Mother's age") 
 base.plot + geom_histogram()
 ```
+
 **I can combine information from multiple data sources. **
 
 ```{r}
 base.plot + geom_histogram(aes(fill = race))
 
 ```
+
 **I can transform information to be in a format better suited for specific tasks.**
+
 ```{r mothers age with race and density}
 base.plot + geom_density(aes(fill = race), alpha = 0.5)
 
